@@ -1,0 +1,58 @@
+@import "tailwindcss";
+
+@theme {
+  --color-neon-orange: #FF5C00;
+  --color-deep-navy: #020617;
+  --color-electric-blue: #00D1FF;
+  --color-racing-red: #E11D48;
+  
+  --font-racing: "Inter", sans-serif;
+}
+
+@layer base {
+  body {
+    background-color: var(--color-deep-navy);
+    color: white;
+    font-family: var(--font-racing);
+    overflow-x: hidden;
+  }
+}
+
+@layer utilities {
+  .glow-orange {
+    text-shadow: 0 0 10px #FF5C00, 0 0 20px #FF5C00;
+  }
+  
+  .glow-border-orange {
+    box-shadow: 0 0 15px rgba(255, 92, 0, 0.4);
+    border: 1px solid rgba(255, 92, 0, 0.5);
+  }
+
+  .racing-gradient {
+    background: linear-gradient(135deg, #020617 0%, #0f172a 100%);
+  }
+
+  .glass-card {
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-deep-navy);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-neon-orange);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #ff7a33;
+}
