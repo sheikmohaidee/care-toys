@@ -7,10 +7,10 @@ import { Product } from "../../lib/data";
 import { useProducts } from "../../context/ProductContext";
 import { Filter, SlidersHorizontal, ChevronDown, Search, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 
-export default function ShopPage() {
+function ShopContent() {
     const { products } = useProducts();
     const searchParams = useSearchParams();
     const [searchTerm, setSearchTerm] = useState("");
@@ -44,7 +44,7 @@ export default function ShopPage() {
 
         // Reset page if filters change
         return filtered;
-    }, [searchTerm, selectedCategory, sortBy, priceRange]);
+    }, [searchTerm, selectedCategory, sortBy, priceRange, products]);
 
     // Reset pagination when filters change
     useEffect(() => {
@@ -245,4 +245,12 @@ export default function ShopPage() {
             <Footer />
         </main>
     );
+}
+
+export default function ShopPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <ShopContent />
+    </Suspense>
+  );
 }
