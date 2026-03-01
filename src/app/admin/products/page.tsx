@@ -54,6 +54,7 @@ export default function AdminProductsPage() {
                             <th className="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-gray-500">Product</th>
                             <th className="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-gray-500">Category</th>
                             <th className="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-gray-500">Price</th>
+                            <th className="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-gray-500">Status / Toggles</th>
                             <th className="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-gray-500">Stock</th>
                             <th className="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-gray-500 text-right">Actions</th>
                         </tr>
@@ -78,7 +79,17 @@ export default function AdminProductsPage() {
                                     </span>
                                 </td>
                                 <td className="px-8 py-6">
-                                    <span className="text-sm font-black text-white">${product.price.toFixed(2)}</span>
+                                    <div className="flex flex-col">
+                                        <span className="text-sm font-black text-white">${product.price.toFixed(2)}</span>
+                                        {/* Mock discount display */}
+                                        <span className="text-[10px] text-gray-500 line-through">${(product.price * 1.2).toFixed(2)}</span>
+                                    </div>
+                                </td>
+                                <td className="px-8 py-6">
+                                    <div className="flex gap-2 flex-wrap max-w-[150px]">
+                                        <span className={`px-2 py-0.5 rounded text-[8px] font-bold uppercase tracking-widest bg-green-500/20 text-green-500`}>Active</span>
+                                        <span className={`px-2 py-0.5 rounded text-[8px] font-bold uppercase tracking-widest bg-blue-500/20 text-blue-500`}>Featured</span>
+                                    </div>
                                 </td>
                                 <td className="px-8 py-6">
                                     <div className="flex items-center gap-3">
