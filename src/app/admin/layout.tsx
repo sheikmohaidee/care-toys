@@ -1,7 +1,20 @@
 "use client";
 
 import Link from "next/link";
-import { LayoutDashboard, Package, Tag, Home, LogOut } from "lucide-react";
+import {
+    LayoutDashboard,
+    Package,
+    Tags,
+    ShoppingCart,
+    Users,
+    Ticket,
+    Flame,
+    Hourglass,
+    Archive,
+    Settings,
+    Home,
+    LogOut
+} from "lucide-react";
 import { usePathname } from "next/navigation";
 
 export default function AdminLayout({
@@ -14,7 +27,14 @@ export default function AdminLayout({
     const navItems = [
         { name: "Dashboard", href: "/admin", icon: LayoutDashboard },
         { name: "Products", href: "/admin/products", icon: Package },
-        { name: "Offers", href: "/admin/offers", icon: Tag },
+        { name: "Categories", href: "/admin/categories", icon: Tags },
+        { name: "Orders", href: "/admin/orders", icon: ShoppingCart },
+        { name: "Users", href: "/admin/users", icon: Users },
+        { name: "Coupons", href: "/admin/coupons", icon: Ticket },
+        { name: "Deals", href: "/admin/deals", icon: Flame },
+        { name: "Drops", href: "/admin/drops", icon: Hourglass },
+        { name: "Inventory", href: "/admin/inventory", icon: Archive },
+        { name: "Settings", href: "/admin/settings", icon: Settings },
     ];
 
     return (

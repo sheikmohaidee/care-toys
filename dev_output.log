@@ -1,0 +1,16 @@
+
+> kid_site@1.0.0 dev
+> next dev
+
+▲ Next.js 16.1.6 (Turbopack)
+- Local:         http://localhost:3000
+- Network:       http://192.168.0.2:3000
+
+✓ Starting...
+✓ Ready in 791ms
+○ Compiling /admin ...
+ GET /admin 200 in 4.9s (compile: 4.5s, render: 419ms)
+ GET /admin/products 200 in 690ms (compile: 602ms, render: 89ms)
+ GET /admin/users 200 in 627ms (compile: 478ms, render: 150ms)
+ GET /admin/deals 200 in 643ms (compile: 529ms, render: 114ms)
+  Reload env: .env
