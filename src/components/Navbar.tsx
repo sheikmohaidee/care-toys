@@ -1,16 +1,64 @@
 "use client";
 
-import { ShoppingCart, Menu, Search } from "lucide-react";
-import { useState } from "react";
-import { motion } from "framer-motion";
+import { ShoppingCart, Menu, Search, ChevronDown, X } from "lucide-react";
+import { useState, useRef, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { useCart } from "../context/CartContext";
 import CartDrawer from "./CartDrawer";
 
+const SHOP_DROPDOWN = [
+    { name: "All Products", href: "/shop" },
+    { name: "Hot Wheels", href: "/shop?category=cars" },
+    { name: "Die-Cast Cars", href: "/shop?category=exotic" },
+    { name: "Racing Tracks", href: "/shop?category=tracks" },
+    { name: "RC Cars", href: "/shop?category=rc" },
+    { name: "Bundles", href: "/shop?category=packs" },
+    { name: "Accessories", href: "/shop?category=stands" },
+];
+
+const NAV_LINKS = [
+    { name: "Home", href: "/" },
+    { name: "Collectors", href: "/collectors" },
+    { name: "Limited", href: "/limited" },
+    { name: "Deals", href: "/deals" },
+    { name: "About", href: "/about" },
+    { name: "Contact", href: "/contact" },
+];
+
+const MOBILE_LINKS = [
+    { name: "Home", href: "/" },
+    { name: "— All Products", href: "/shop" },
+    { name: "— Hot Wheels", href: "/shop?category=cars" },
+    { name: "— Die-Cast Cars", href: "/shop?category=exotic" },
+    { name: "— Racing Tracks", href: "/shop?category=tracks" },
+    { name: "— RC Cars", href: "/shop?category=rc" },
+    { name: "— Bundles", href: "/shop?category=packs" },
+    { name: "— Accessories", href: "/shop?category=stands" },
+    { name: "Collectors", href: "/collectors" },
+    { name: "Limited", href: "/limited" },
+    { name: "Deals", href: "/deals" },
+    { name: "About", href: "/about" },
+    { name: "Contact", href: "/contact" },
+];
+
 export default function Navbar() {
     const [isOpen, setIsOpen] = useState(false);
     const [isCartOpen, setIsCartOpen] = useState(false);
+    const [shopOpen, setShopOpen] = useState(false);
     const { totalItems } = useCart();
+    const dropdownRef = useRef<HTMLDivElement>(null);
+
+    // Close dropdown when clicking outside
+    useEffect(() => {
+        function handleClickOutside(e: MouseEvent) {
+            if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+                setShopOpen(false);
+            }
+        }
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => document.removeEventListener("mousedown", handleClickOutside);
+    }, []);
 
     return (
         <nav className="fixed top-0 left-0 right-0 z-50 bg-deep-navy/80 backdrop-blur-md border-b border-white/10">
@@ -29,13 +77,54 @@ export default function Navbar() {
                     {/* Desktop Links */}
                     <div className="hidden md:block">
                         <div className="ml-10 flex items-baseline space-x-8">
-                            {[
-                                { name: "Shop", href: "/shop" },
-                                { name: "Collections", href: "/collections" },
-                                { name: "Tracks", href: "/tracks" },
-                                { name: "Limited", href: "/limited" },
-                                { name: "Deals", href: "/deals" }
-                            ].map((item) => (
+                            {/* Home */}
+                            <Link
+                                href="/"
+                                className="text-gray-300 hover:text-neon-orange px-3 py-2 rounded-md text-sm font-bold uppercase tracking-wider transition-colors relative group"
+                            >
+                                Home
+                                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-neon-orange transition-all group-hover:w-full"></span>
+                            </Link>
+
+                            {/* Shop Dropdown */}
+                            <div className="relative" ref={dropdownRef}>
+                                <button
+                                    onClick={() => setShopOpen(!shopOpen)}
+                                    onMouseEnter={() => setShopOpen(true)}
+                                    className="text-gray-300 hover:text-neon-orange px-3 py-2 rounded-md text-sm font-bold uppercase tracking-wider transition-colors relative group flex items-center gap-1"
+                                >
+                                    Shop
+                                    <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${shopOpen ? 'rotate-180 text-neon-orange' : ''}`} />
+                                    <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-neon-orange transition-all group-hover:w-full"></span>
+                                </button>
+
+                                <AnimatePresence>
+                                    {shopOpen && (
+                                        <motion.div
+                                            initial={{ opacity: 0, y: 8, scale: 0.97 }}
+                                            animate={{ opacity: 1, y: 0, scale: 1 }}
+                                            exit={{ opacity: 0, y: 8, scale: 0.97 }}
+                                            transition={{ duration: 0.15 }}
+                                            onMouseLeave={() => setShopOpen(false)}
+                                            className="absolute top-full left-0 mt-2 w-52 bg-deep-navy/95 backdrop-blur-lg border border-white/10 rounded-2xl shadow-2xl shadow-black/50 py-2 overflow-hidden"
+                                        >
+                                            {SHOP_DROPDOWN.map((item, idx) => (
+                                                <Link
+                                                    key={item.name}
+                                                    href={item.href}
+                                                    onClick={() => setShopOpen(false)}
+                                                    className={`block px-5 py-2.5 text-sm font-bold uppercase tracking-wider transition-colors hover:bg-neon-orange/10 hover:text-neon-orange ${idx === 0 ? 'text-white border-b border-white/10 mb-1' : 'text-gray-400'}`}
+                                                >
+                                                    {item.name}
+                                                </Link>
+                                            ))}
+                                        </motion.div>
+                                    )}
+                                </AnimatePresence>
+                            </div>
+
+                            {/* Rest of nav links */}
+                            {NAV_LINKS.slice(1).map((item) => (
                                 <Link
                                     key={item.name}
                                     href={item.href}
@@ -68,7 +157,7 @@ export default function Navbar() {
                             onClick={() => setIsOpen(!isOpen)}
                             className="md:hidden text-gray-300 hover:text-white"
                         >
-                            <Menu className="w-6 h-6" />
+                            {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
                         </button>
                     </div>
                 </div>
@@ -77,30 +166,38 @@ export default function Navbar() {
             <CartDrawer isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
 
             {/* Mobile Menu */}
-            {isOpen && (
-                <motion.div
-                    initial={{ opacity: 0, y: -20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="md:hidden bg-deep-navy/95 border-b border-white/10 px-4 pt-2 pb-6"
-                >
-                    {[
-                        { name: "Shop", href: "/shop" },
-                        { name: "Collections", href: "/collections" },
-                        { name: "Tracks", href: "/tracks" },
-                        { name: "Limited", href: "/limited" },
-                        { name: "Deals", href: "/deals" }
-                    ].map((item) => (
-                        <Link
-                            key={item.name}
-                            href={item.href}
-                            onClick={() => setIsOpen(false)}
-                            className="block text-gray-300 hover:text-neon-orange px-3 py-4 text-base font-bold uppercase tracking-widest"
-                        >
-                            {item.name}
-                        </Link>
-                    ))}
-                </motion.div>
-            )}
+            <AnimatePresence>
+                {isOpen && (
+                    <motion.div
+                        initial={{ opacity: 0, y: -20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -20 }}
+                        className="md:hidden bg-deep-navy/95 border-b border-white/10 px-4 pt-2 pb-6"
+                    >
+                        <p className="text-neon-orange text-[9px] font-black uppercase tracking-[0.3em] px-3 pt-4 pb-2 opacity-60">Shop</p>
+                        {MOBILE_LINKS.map((item) => {
+                            const isShopHeader = item.name === "Home";
+                            const isShopCategory = item.name.startsWith("—");
+                            const isSectionHead = !isShopCategory && item.name !== "Home";
+
+                            return (
+                                <div key={item.name}>
+                                    {isSectionHead && item.name === "Collectors" && (
+                                        <div className="border-t border-white/5 mt-2 pt-2" />
+                                    )}
+                                    <Link
+                                        href={item.href}
+                                        onClick={() => setIsOpen(false)}
+                                        className={`block px-3 py-3 text-base font-bold uppercase tracking-widest transition-colors hover:text-neon-orange ${isShopCategory ? 'text-gray-500 text-sm pl-6' : 'text-gray-300'}`}
+                                    >
+                                        {isShopCategory ? item.name.replace("— ", "") : item.name}
+                                    </Link>
+                                </div>
+                            );
+                        })}
+                    </motion.div>
+                )}
+            </AnimatePresence>
         </nav>
     );
 }

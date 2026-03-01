@@ -20,11 +20,21 @@ function ShopContent() {
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 12;
 
-    const categories = ["All", "cars", "exotic", "rc", "stands", "tracks", "limited", "packs", "toys"];
+    const categories = [
+        { label: "All", value: "All" },
+        { label: "Hot Wheels", value: "cars" },
+        { label: "Die-Cast Cars", value: "exotic" },
+        { label: "Racing Tracks", value: "tracks" },
+        { label: "RC Cars", value: "rc" },
+        { label: "Bundles", value: "packs" },
+        { label: "Accessories", value: "stands" },
+        { label: "Limited", value: "limited" },
+        { label: "Toys", value: "toys" },
+    ];
 
     useEffect(() => {
         const cat = searchParams.get('category');
-        if (cat && categories.includes(cat)) {
+        if (cat && categories.some(c => c.value === cat)) {
             setSelectedCategory(cat);
         }
     }, [searchParams]);
@@ -119,13 +129,13 @@ function ShopContent() {
                                 </h4>
                                 <ul className="space-y-4">
                                     {categories.map((cat) => (
-                                        <li key={cat}>
+                                        <li key={cat.value}>
                                             <button
-                                                onClick={() => setSelectedCategory(cat)}
+                                                onClick={() => setSelectedCategory(cat.value)}
                                                 className={`flex items-center gap-3 group cursor-pointer w-full text-left`}
                                             >
-                                                <div className={`w-4 h-4 border transition-all rounded ${selectedCategory === cat ? 'border-neon-orange bg-neon-orange' : 'border-white/20 group-hover:border-neon-orange'}`}></div>
-                                                <span className={`transition-colors text-sm font-bold uppercase tracking-wider ${selectedCategory === cat ? 'text-white' : 'text-gray-400 group-hover:text-white'}`}>{cat}</span>
+                                                <div className={`w-4 h-4 border transition-all rounded ${selectedCategory === cat.value ? 'border-neon-orange bg-neon-orange' : 'border-white/20 group-hover:border-neon-orange'}`}></div>
+                                                <span className={`transition-colors text-sm font-bold uppercase tracking-wider ${selectedCategory === cat.value ? 'text-white' : 'text-gray-400 group-hover:text-white'}`}>{cat.label}</span>
                                             </button>
                                         </li>
                                     ))}
@@ -248,9 +258,9 @@ function ShopContent() {
 }
 
 export default function ShopPage() {
-  return (
-    <Suspense fallback={<div>Loading...</div>}>
-      <ShopContent />
-    </Suspense>
-  );
+    return (
+        <Suspense fallback={<div>Loading...</div>}>
+            <ShopContent />
+        </Suspense>
+    );
 }

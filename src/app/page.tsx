@@ -3,10 +3,10 @@
 import Navbar from "../components/Navbar";
 import Hero from "../components/Hero";
 import CategorySection from "../components/CategorySection";
-import SpecialOffer from "../components/SpecialOffer";
-import BestSeller from "../components/BestSeller";
+import CollectorsPick from "../components/BestSeller";
 import ProductCard from "../components/ProductCard";
 import Footer from "../components/Footer";
+import Link from "next/link";
 import { PRODUCTS, Product } from "../lib/data";
 import { motion } from "framer-motion";
 
@@ -27,13 +27,13 @@ export default function Home() {
                                 Featured <span className="text-neon-orange">Gear</span>
                             </h2>
                         </div>
-                        <button className="text-neon-orange font-black uppercase tracking-widest text-xs border-b border-neon-orange/20 pb-1 hover:border-neon-orange transition-all">
+                        <Link href="/shop" className="text-neon-orange font-black uppercase tracking-widest text-xs border-b border-neon-orange/20 pb-1 hover:border-neon-orange transition-all">
                             View All Products
-                        </button>
+                        </Link>
                     </div>
 
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-                        {PRODUCTS.map((product: Product, idx) => (
+                    <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        {PRODUCTS.slice(0, 6).map((product: Product, idx) => (
                             <motion.div
                                 key={product.id}
                                 initial={{ opacity: 0, y: 20 }}
@@ -48,8 +48,7 @@ export default function Home() {
                 </div>
             </section>
 
-            <SpecialOffer />
-            <BestSeller />
+            <CollectorsPick />
             <Footer />
         </main>
     );

@@ -5,7 +5,7 @@ import { Star } from "lucide-react";
 import { useCart } from "../context/CartContext";
 import { useProducts } from "../context/ProductContext";
 
-export default function BestSeller() {
+export default function CollectorsPick() {
     const { addToCart } = useCart();
     const { products } = useProducts();
     const bestSeller = products.find(p => p.isBestSeller) || products[0];
@@ -18,7 +18,7 @@ export default function BestSeller() {
                 <div className="flex flex-col items-center mb-20">
                     <span className="text-neon-orange font-black uppercase tracking-[0.3em] text-xs mb-4">Elite Drops</span>
                     <h2 className="text-5xl md:text-6xl font-black italic uppercase tracking-tighter text-white">
-                        BEST <span className="text-neon-orange">SELLER</span>
+                        COLLECTOR'S <span className="text-neon-orange">PICK</span>
                     </h2>
                 </div>
 
