@@ -1,20 +1,28 @@
 @import "tailwindcss";
 
 @theme {
-  --color-neon-orange: #FF5C00;
-  --color-deep-navy: #020617;
-  --color-electric-blue: #00D1FF;
-  --color-racing-red: #E11D48;
+  --color-primary: #2b8cee;
+  --color-accent-orange: #f97316;
+  --color-background-light: #f6f7f8;
+  --color-background-dark: #101922;
   
-  --font-racing: "Inter", sans-serif;
+  --font-display: "Plus Jakarta Sans", sans-serif;
 }
 
 @layer base {
   body {
-    background-color: var(--color-deep-navy);
-    color: white;
-    font-family: var(--font-racing);
+    background-color: var(--color-background-light);
+    color: #0f172a; /* slate-900 */
+    font-family: var(--font-display);
     overflow-x: hidden;
+  }
+
+  /* Quick dark mode setup based on class if needed, or system */
+  @media (prefers-color-scheme: dark) {
+    body {
+      background-color: var(--color-background-dark);
+      color: #f1f5f9; /* slate-100 */
+    }
   }
 }
 

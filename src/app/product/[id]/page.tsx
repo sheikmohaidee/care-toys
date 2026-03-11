@@ -1,200 +1,133 @@
 "use client";
 
-import { useParams, useRouter } from "next/navigation";
-import { Product } from "../../../lib/data";
-import { useProducts } from "../../../context/ProductContext";
 import Navbar from "../../../components/Navbar";
 import Footer from "../../../components/Footer";
-import { motion } from "framer-motion";
-import { ChevronLeft, Star, ShoppingCart, ShieldCheck, Truck, RefreshCcw, Plus, Minus } from "lucide-react";
-import { useState, useMemo } from "react";
-import { useCart } from "../../../context/CartContext";
+import Link from "next/link";
+import { useParams } from "next/navigation";
 
-export default function ProductDetailPage() {
+export default function ProductDetails() {
     const { id } = useParams();
-    const router = useRouter();
-    const { getProduct } = useProducts();
-    const { addToCart } = useCart();
-    const [quantity, setQuantity] = useState(1);
-
-    const product = useMemo(() => {
-        return getProduct(id as string);
-    }, [id, getProduct]);
-
-    if (!product) {
-        return (
-            <div className="min-h-screen bg-deep-navy flex items-center justify-center">
-                <div className="text-center">
-                    <h1 className="text-4xl font-black text-white mb-4">ENGINE NOT FOUND</h1>
-                    <button
-                        onClick={() => router.push("/shop")}
-                        className="text-neon-orange font-bold uppercase tracking-widest hover:underline"
-                    >
-                        Back to Collection
-                    </button>
-                </div>
-            </div>
-        );
-    }
-
-    const { name, price, description, rating, reviewsCount, details, stock, image, category } = product;
 
     return (
-        <main className="min-h-screen bg-deep-navy text-white">
+        <div className="relative flex min-h-screen flex-col">
             <Navbar />
-
-            <section className="pt-32 pb-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+            <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-grow">
                 {/* Breadcrumbs */}
-                <button
-                    onClick={() => router.back()}
-                    className="flex items-center gap-2 text-gray-500 hover:text-white transition-colors mb-12 group"
-                >
-                    <ChevronLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
-                    <span className="font-bold uppercase tracking-widest text-xs">Back to Collection</span>
-                </button>
+                <nav className="flex items-center gap-2 mb-8 text-sm text-slate-500">
+                    <Link href="/" className="hover:text-primary">Home</Link>
+                    <span className="material-symbols-outlined text-xs">chevron_right</span>
+                    <Link href="/shop" className="hover:text-primary">Shop</Link>
+                    <span className="material-symbols-outlined text-xs">chevron_right</span>
+                    <span className="text-slate-900 dark:text-white font-medium">Premium Care Plush Toy</span>
+                </nav>
 
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 item-start">
-                    {/* Left: Image Showcase */}
-                    <div className="sticky top-32">
-                        <motion.div
-                            initial={{ opacity: 0, scale: 0.9 }}
-                            animate={{ opacity: 1, scale: 1 }}
-                            className="bg-black/40 border border-white/10 rounded-3xl aspect-square relative overflow-hidden flex items-center justify-center group"
-                        >
-                            <div className="absolute inset-0 bg-gradient-to-br from-neon-orange/5 to-transparent"></div>
-                            {/* Static Placeholder for premium feel */}
-                            <div className="text-white/5 font-black text-8xl italic rotate-12 select-none group-hover:scale-110 transition-transform duration-700">{name}</div>
-
-                            {/* Animated Decoration */}
-                            <motion.div
-                                animate={{
-                                    rotate: [0, 360],
-                                    scale: [1, 1.2, 1]
-                                }}
-                                transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-                                className="absolute -bottom-20 -right-20 w-80 h-80 bg-neon-orange/10 blur-[100px] rounded-full"
-                            ></motion.div>
-                        </motion.div>
-
-                        <div className="grid grid-cols-4 gap-4 mt-8">
-                            {[1, 2, 3, 4].map((i) => (
-                                <div key={i} className="aspect-square bg-white/5 rounded-xl border border-white/5 hover:border-neon-orange/40 transition-all cursor-pointer flex items-center justify-center opacity-40 hover:opacity-100">
-                                    <span className="text-[10px] font-black italic text-white/20 uppercase tracking-tighter">View {i}</span>
-                                </div>
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-16">
+                    {/* Left: Image Gallery */}
+                    <div className="flex flex-col-reverse md:flex-row gap-4">
+                        <div className="flex md:flex-col gap-4 overflow-x-auto md:overflow-y-auto">
+                            {[1, 2, 3, 4].map((thumb) => (
+                                <button key={thumb} className={`flex-shrink-0 w-20 h-20 rounded-lg border-2 ${thumb === 1 ? 'border-primary' : 'border-transparent hover:border-slate-300 dark:hover:border-slate-700'} overflow-hidden bg-slate-100 dark:bg-slate-800`}>
+                                    <div className="w-full h-full bg-cover bg-center" />
+                                </button>
                             ))}
+                        </div>
+                        <div className="flex-1 aspect-square rounded-xl overflow-hidden bg-slate-100 dark:bg-slate-900 group relative">
+                            <div className="w-full h-full bg-cover bg-center transition-transform duration-500 group-hover:scale-110" />
+                            <div className="absolute top-4 right-4">
+                                <button className="p-2 rounded-full bg-white/90 dark:bg-slate-800/90 shadow-sm text-slate-900 dark:text-white hover:text-red-500 transition-colors">
+                                    <span className="material-symbols-outlined">favorite</span>
+                                </button>
+                            </div>
                         </div>
                     </div>
 
-                    {/* Right: Product Details */}
-                    <div className="space-y-10">
+                    {/* Right: Product Information */}
+                    <div className="flex flex-col gap-6">
                         <div>
-                            <div className="flex items-center gap-4 mb-4">
-                                <span className="bg-neon-orange/10 text-neon-orange text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full border border-neon-orange/20">
-                                    {category}
-                                </span>
-                                {stock && stock < 10 && (
-                                    <span className="text-red-500 text-[10px] font-black uppercase tracking-widest animate-pulse">
-                                        Limited Stock: {stock} Left
-                                    </span>
-                                )}
-                            </div>
-                            <h1 className="text-5xl md:text-6xl font-black italic uppercase tracking-tighter mb-4 leading-none">
-                                {name}
-                            </h1>
-                            <div className="flex items-center gap-6">
-                                <div className="flex items-center gap-2">
-                                    <div className="flex gap-0.5">
-                                        {[...Array(5)].map((_, i) => (
-                                            <Star
-                                                key={i}
-                                                className={`w-4 h-4 ${i < Math.floor(rating || 0) ? "text-yellow-500 fill-yellow-500" : "text-gray-700"}`}
-                                            />
-                                        ))}
-                                    </div>
-                                    <span className="text-sm font-bold text-white">{rating}</span>
+                            <div className="flex items-center gap-2 mb-2">
+                                <div className="flex text-amber-400">
+                                    {[1, 2, 3, 4, 5].map((star) => (
+                                        <span key={star} className="material-symbols-outlined text-sm fill-current">star</span>
+                                    ))}
                                 </div>
-                                <div className="w-1 h-1 bg-gray-700 rounded-full"></div>
-                                <button className="text-gray-500 text-sm font-bold hover:text-white hover:underline transition-all">
-                                    {reviewsCount} Customer Reviews
+                                <span className="text-xs text-slate-500">(128 reviews)</span>
+                                <span className="text-xs font-bold text-emerald-500 bg-emerald-50 dark:bg-emerald-950/30 px-2 py-0.5 rounded-full">In Stock</span>
+                            </div>
+                            <h2 className="text-4xl font-extrabold tracking-tight text-slate-900 dark:text-white mb-2">Premium Care Plush Toy</h2>
+                            <p className="text-2xl font-bold text-primary">$29.99</p>
+                        </div>
+
+                        <div className="h-px bg-slate-200 dark:bg-slate-800 w-full"></div>
+
+                        <p className="text-slate-600 dark:text-slate-400 leading-relaxed">
+                            Designed with extra soft hypoallergenic materials, our Premium Care Plush Toy provides comfort and emotional support for children of all ages.
+                        </p>
+
+                        <div className="flex flex-col gap-4">
+                            <span className="text-sm font-bold">Quantity</span>
+                            <div className="flex items-center gap-4">
+                                <div className="flex items-center border border-slate-200 dark:border-slate-800 rounded-lg bg-white dark:bg-slate-900 overflow-hidden h-12">
+                                    <button className="px-4 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
+                                        <span className="material-symbols-outlined text-sm">remove</span>
+                                    </button>
+                                    <input type="number" defaultValue="1" className="w-12 text-center border-none focus:ring-0 bg-transparent text-sm font-bold outline-none" />
+                                    <button className="px-4 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
+                                        <span className="material-symbols-outlined text-sm">add</span>
+                                    </button>
+                                </div>
+                                <button className="flex-1 bg-primary hover:bg-primary/90 text-white font-bold py-3 px-8 rounded-lg transition-all flex items-center justify-center gap-2 h-12 shadow-lg shadow-primary/25">
+                                    <span className="material-symbols-outlined">shopping_bag</span>
+                                    Add to Cart
                                 </button>
                             </div>
                         </div>
 
-                        <div className="text-4xl font-black text-white">
-                            ${price}
+                        <div className="grid grid-cols-2 gap-4 pt-4">
+                            <div className="flex items-center gap-3 p-3 bg-slate-50 dark:bg-slate-900 rounded-lg">
+                                <span className="material-symbols-outlined text-primary">local_shipping</span>
+                                <div>
+                                    <p className="text-xs font-bold">Free Shipping</p>
+                                    <p className="text-[10px] text-slate-500">Orders over $50</p>
+                                </div>
+                            </div>
+                            <div className="flex items-center gap-3 p-3 bg-slate-50 dark:bg-slate-900 rounded-lg">
+                                <span className="material-symbols-outlined text-primary">verified_user</span>
+                                <div>
+                                    <p className="text-xs font-bold">1 Year Warranty</p>
+                                    <p className="text-[10px] text-slate-500">Quality guaranteed</p>
+                                </div>
+                            </div>
                         </div>
+                    </div>
+                </div>
 
-                        <p className="text-gray-400 text-lg leading-relaxed font-medium">
-                            {description || "Experience the pinnacle of die-cast engineering. This model features a high-performance chassis, precision wheels, and a level of detail that satisfies the most demanding collectors."}
-                        </p>
-
-                        <div className="space-y-6 pt-6 border-t border-white/10">
-                            <h3 className="font-black uppercase tracking-widest text-xs text-neon-orange">Technical Breakdown</h3>
-                            <ul className="grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-12">
-                                {(details || [
-                                    "Aerodynamic Carbon Body",
-                                    "Ultra-Glide Ball Bearings",
-                                    "Precision 1:64 Scale",
-                                    "Hand-Finished Interior"
-                                ]).map((detail, idx) => (
-                                    <li key={idx} className="flex items-center gap-3 text-sm font-bold text-gray-300">
-                                        <div className="w-1.5 h-1.5 bg-neon-orange rounded-full"></div>
-                                        {detail}
+                {/* Tabs Section */}
+                <div className="mb-16">
+                    <div className="border-b border-slate-200 dark:border-slate-800 mb-8">
+                        <div className="flex gap-8 overflow-x-auto pb-px">
+                            <button className="pb-4 text-sm font-bold border-b-2 border-primary text-primary whitespace-nowrap">Description</button>
+                            <button className="pb-4 text-sm font-medium border-b-2 border-transparent text-slate-500 hover:text-slate-900 dark:hover:text-white whitespace-nowrap">Specifications</button>
+                        </div>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
+                        <div className="md:col-span-2 space-y-6">
+                            <h3 className="text-xl font-bold">Product Details</h3>
+                            <p className="text-slate-600 dark:text-slate-400 leading-relaxed">
+                                Our flagship toy isn't just a toy; it's a companion designed with child psychology in mind.
+                            </p>
+                            <ul className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                {["Hypoallergenic materials", "Machine washable", "Non-toxic", "Safety tested"].map(feat => (
+                                    <li key={feat} className="flex items-start gap-3">
+                                        <span className="material-symbols-outlined text-primary text-xl">check_circle</span>
+                                        <span className="text-sm">{feat}</span>
                                     </li>
                                 ))}
                             </ul>
                         </div>
-
-                        {/* Purchase Options */}
-                        <div className="space-y-8 pt-10 border-t border-white/10">
-                            <div className="flex flex-wrap items-center gap-8">
-                                <div className="flex items-center bg-white/5 rounded-2xl p-1 border border-white/10">
-                                    <button
-                                        onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                                        className="w-12 h-12 flex items-center justify-center hover:bg-white/5 rounded-xl transition-all"
-                                    >
-                                        <Minus className="w-4 h-4" />
-                                    </button>
-                                    <span className="w-12 text-center font-black text-xl">{quantity}</span>
-                                    <button
-                                        onClick={() => setQuantity(quantity + 1)}
-                                        className="w-12 h-12 flex items-center justify-center hover:bg-white/5 rounded-xl transition-all"
-                                    >
-                                        <Plus className="w-4 h-4" />
-                                    </button>
-                                </div>
-
-                                <button
-                                    onClick={() => {
-                                        for (let i = 0; i < quantity; i++) addToCart(product);
-                                    }}
-                                    className="flex-1 min-w-[200px] h-14 bg-white text-black font-black uppercase tracking-widest italic flex items-center justify-center gap-3 rounded-2xl hover:bg-neon-orange hover:text-white transition-all shadow-[0_0_40px_rgba(255,255,255,0.1)] active:scale-95"
-                                >
-                                    <ShoppingCart className="w-5 h-5" /> Add to Garage
-                                </button>
-                            </div>
-
-                            {/* Trust Badges */}
-                            <div className="grid grid-cols-3 gap-6 py-8 px-6 bg-white/5 rounded-3xl border border-white/5">
-                                <div className="flex flex-col items-center gap-3 text-center">
-                                    <ShieldCheck className="w-5 h-5 text-neon-orange" />
-                                    <span className="text-[8px] font-black uppercase tracking-[0.2em] text-gray-500">Secure Warranty</span>
-                                </div>
-                                <div className="flex flex-col items-center gap-3 text-center border-x border-white/5">
-                                    <Truck className="w-5 h-5 text-neon-orange" />
-                                    <span className="text-[8px] font-black uppercase tracking-[0.2em] text-gray-500">Global Shipping</span>
-                                </div>
-                                <div className="flex flex-col items-center gap-3 text-center">
-                                    <RefreshCcw className="w-5 h-5 text-neon-orange" />
-                                    <span className="text-[8px] font-black uppercase tracking-[0.2em] text-gray-500">7-Day Return</span>
-                                </div>
-                            </div>
-                        </div>
                     </div>
                 </div>
-            </section>
-
+            </main>
             <Footer />
-        </main>
+        </div>
     );
 }
