@@ -8,132 +8,125 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(cuid())
+  id        String   @id @default(uuid())
   email     String   @unique
-  name      String?
-  role      String   @default("USER") // ADMIN, USER, MODERATOR
-  status    String   @default("ACTIVE") // ACTIVE, BLOCKED
+  password  String
+  firstName String
+  lastName  String
+  role      String   @default("USER") // USER, ADMIN
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  orders    Order[]
-}
 
-model Category {
-  id        String    @id @default(cuid())
-  name      String    @unique
-  image     String?
-  products  Product[]
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  orders    Order[]
+  cart      CartItem[]
 }
 
 model Product {
-  id            String         @id @default(cuid())
-  name          String
-  description   String?
-  price         Float
-  discountPrice Float?
-  stock         Int            @default(0)
-  status        String         @default("ACTIVE") // ACTIVE, INACTIVE
-  isFeatured    Boolean        @default(false)
-  isLimited     Boolean        @default(false)
-  categoryId    String?
-  category      Category?      @relation(fields: [categoryId], references: [id])
-  images        String?        // Comma separated URLs
-  tags          String?        // Comma separated tags
-  deals         DealProduct[]
-  drops         DropProduct[]
-  orderItems    OrderItem[]
+  id          String   @id @default(uuid())
+  name        String
+  description String
+  price       Float
+  images      String   // Stored as JSON string of image URLs
+  categoryId  String
+  category    Category @relation(fields: [categoryId], references: [id])
+  stock       Int      @default(0)
+  isExclusive Boolean  @default(false)
+  isNew       Boolean  @default(false)
+  rarity      String   @default("COMMON") // COMMON, RARE, ULTRA_RARE, VAULT_RELIC
+  scale       String?  // e.g., 1:64
+  brand       String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  orderItems  OrderItem[]
+  cartItems   CartItem[]
   inventoryLogs InventoryLog[]
-  createdAt     DateTime       @default(now())
-  updatedAt     DateTime       @updatedAt
 }
 
-model Coupon {
-  id            String   @id @default(cuid())
-  code          String   @unique
-  discountType  String   // PERCENTAGE, FIXED
-  discountValue Float
-  expiry        DateTime
-  usageCount    Int      @default(0)
-  usageLimit    Int?
-  minOrderValue Float?
-  status        String   @default("ACTIVE") // ACTIVE, INACTIVE
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-}
-
-model Deal {
-  id        String        @id @default(cuid())
-  name      String
-  discount  String        // e.g., "15% OFF" or "50% OFF"
-  expiry    DateTime
-  status    String        @default("ACTIVE") // ACTIVE, EXPIRED
-  products  DealProduct[]
-  createdAt DateTime      @default(now())
-  updatedAt DateTime      @updatedAt
-}
-
-// Join table for Deals <-> Products
-model DealProduct {
-  dealId    String
-  productId String
-  deal      Deal    @relation(fields: [dealId], references: [id], onDelete: Cascade)
-  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
-
-  @@id([dealId, productId])
-}
-
-model Drop {
-  id        String        @id @default(cuid())
-  name      String
-  date      DateTime
-  limit     Int
-  status    String        @default("SCHEDULED") // SCHEDULED, ACTIVE, SOLD_OUT
-  products  DropProduct[]
-  createdAt DateTime      @default(now())
-  updatedAt DateTime      @updatedAt
-}
-
-// Join table for Drops <-> Products
-model DropProduct {
-  dropId    String
-  productId String
-  drop      Drop    @relation(fields: [dropId], references: [id], onDelete: Cascade)
-  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
-
-  @@id([dropId, productId])
+model Category {
+  id          String   @id @default(uuid())
+  name        String   @unique
+  description String?
+  products    Product[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
 
 model Order {
-  id            String      @id @default(cuid())
-  userId        String?
-  user          User?       @relation(fields: [userId], references: [id])
-  customerName  String
-  customerEmail String?
-  totalAmount   Float
-  paymentStatus String      @default("UNPAID") // PAID, UNPAID, REFUNDED
-  orderStatus   String      @default("PENDING") // PENDING, CONFIRMED, SHIPPED, DELIVERED, CANCELLED
-  items         OrderItem[]
-  createdAt     DateTime    @default(now())
-  updatedAt     DateTime    @updatedAt
+  id          String   @id @default(uuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+  status      String   @default("PENDING") // PENDING, PAID, SHIPPED, DELIVERED, CANCELLED
+  total       Float
+  shippingAddress String // JSON string
+  paymentInfo String // JSON string (last 4, brand)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  items       OrderItem[]
 }
 
 model OrderItem {
-  id        String  @id @default(cuid())
+  id        String   @id @default(uuid())
   orderId   String
-  order     Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  order     Order    @relation(fields: [orderId], references: [id])
   productId String
-  product   Product @relation(fields: [productId], references: [id])
+  product   Product  @relation(fields: [productId], references: [id])
   quantity  Int
-  price     Float   // Price at time of order
+  priceAtPurchase Float
+}
+
+model CartItem {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  productId String
+  product   Product  @relation(fields: [productId], references: [id])
+  quantity  Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Coupon {
+  id          String   @id @default(uuid())
+  code        String   @unique
+  discountType String  // PERCENTAGE, FIXED
+  discountValue Float
+  validFrom   DateTime
+  validUntil  DateTime
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Deal {
+  id          String   @id @default(uuid())
+  name        String
+  description String
+  discountType String // PERCENTAGE, FIXED
+  discountValue Float
+  startDate   DateTime
+  endDate     DateTime
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Drop {
+  id          String   @id @default(uuid())
+  name        String
+  description String
+  dropDate    DateTime
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
 
 model InventoryLog {
-  id        String   @id @default(cuid())
-  productId String
-  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
-  change    Int      // Positive for addition, negative for reduction
-  reason    String?
-  createdAt DateTime @default(now())
+  id          String   @id @default(uuid())
+  productId   String
+  product     Product  @relation(fields: [productId], references: [id])
+  change      Int      // e.g., +10, -5
+  reason      String   // SALE, RESTOCK, ADJUSTMENT
+  createdAt   DateTime @default(now())
 }

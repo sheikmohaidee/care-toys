@@ -7,36 +7,19 @@ import Link from "next/link";
 import { useCart } from "../context/CartContext";
 import CartDrawer from "./CartDrawer";
 
-const SHOP_DROPDOWN = [
-    { name: "All Products", href: "/shop" },
-    { name: "Hot Wheels", href: "/shop?category=cars" },
-    { name: "Die-Cast Cars", href: "/shop?category=exotic" },
-    { name: "Racing Tracks", href: "/shop?category=tracks" },
-    { name: "RC Cars", href: "/shop?category=rc" },
-    { name: "Bundles", href: "/shop?category=packs" },
-    { name: "Accessories", href: "/shop?category=stands" },
-];
-
 const NAV_LINKS = [
     { name: "Home", href: "/" },
-    { name: "Collectors", href: "/collectors" },
-    { name: "Limited", href: "/limited" },
+    { name: "Shop", href: "/shop" },
+    { name: "Collections", href: "/collections" },
+    { name: "New Arrivals", href: "/new-arrivals" },
     { name: "Deals", href: "/deals" },
-    { name: "About", href: "/about" },
-    { name: "Contact", href: "/contact" },
 ];
 
 const MOBILE_LINKS = [
     { name: "Home", href: "/" },
-    { name: "— All Products", href: "/shop" },
-    { name: "— Hot Wheels", href: "/shop?category=cars" },
-    { name: "— Die-Cast Cars", href: "/shop?category=exotic" },
-    { name: "— Racing Tracks", href: "/shop?category=tracks" },
-    { name: "— RC Cars", href: "/shop?category=rc" },
-    { name: "— Bundles", href: "/shop?category=packs" },
-    { name: "— Accessories", href: "/shop?category=stands" },
-    { name: "Collectors", href: "/collectors" },
-    { name: "Limited", href: "/limited" },
+    { name: "Shop", href: "/shop" },
+    { name: "Collections", href: "/collections" },
+    { name: "New Arrivals", href: "/new-arrivals" },
     { name: "Deals", href: "/deals" },
     { name: "About", href: "/about" },
     { name: "Contact", href: "/contact" },
@@ -61,104 +44,63 @@ export default function Navbar() {
     }, []);
 
     return (
-        <nav className="fixed top-0 left-0 right-0 z-50 bg-deep-navy/80 backdrop-blur-md border-b border-white/10">
+        <header className="sticky top-0 z-50 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md border-b border-primary/10">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="flex items-center justify-between h-20">
+                <div className="flex items-center justify-between h-16 sm:h-20">
                     {/* Logo */}
-                    <Link href="/" className="flex-shrink-0 flex items-center gap-2 group hover:opacity-90 transition-opacity">
-                        <div className="w-10 h-10 bg-neon-orange rounded-lg flex items-center justify-center rotate-3 border-2 border-white/20 group-hover:rotate-6 transition-transform">
-                            <span className="text-white font-black text-xl italic">C</span>
-                        </div>
-                        <span className="text-2xl font-black tracking-tighter italic text-white">
-                            CARE<span className="text-neon-orange">TOYS</span>
-                        </span>
-                    </Link>
+                    <div className="flex items-center gap-8">
+                        <Link href="/" className="flex items-center gap-2 text-primary">
+                            <span className="material-symbols-outlined text-3xl font-bold">rocket_launch</span>
+                            <h2 className="text-slate-900 dark:text-white text-xl font-extrabold tracking-tight">Care Toys</h2>
+                        </Link>
 
-                    {/* Desktop Links */}
-                    <div className="hidden md:block">
-                        <div className="ml-10 flex items-baseline space-x-8">
-                            {/* Home */}
-                            <Link
-                                href="/"
-                                className="text-gray-300 hover:text-neon-orange px-3 py-2 rounded-md text-sm font-bold uppercase tracking-wider transition-colors relative group"
-                            >
-                                Home
-                                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-neon-orange transition-all group-hover:w-full"></span>
-                            </Link>
-
-                            {/* Shop Dropdown */}
-                            <div className="relative" ref={dropdownRef}>
-                                <button
-                                    onClick={() => setShopOpen(!shopOpen)}
-                                    onMouseEnter={() => setShopOpen(true)}
-                                    className="text-gray-300 hover:text-neon-orange px-3 py-2 rounded-md text-sm font-bold uppercase tracking-wider transition-colors relative group flex items-center gap-1"
-                                >
-                                    Shop
-                                    <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${shopOpen ? 'rotate-180 text-neon-orange' : ''}`} />
-                                    <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-neon-orange transition-all group-hover:w-full"></span>
-                                </button>
-
-                                <AnimatePresence>
-                                    {shopOpen && (
-                                        <motion.div
-                                            initial={{ opacity: 0, y: 8, scale: 0.97 }}
-                                            animate={{ opacity: 1, y: 0, scale: 1 }}
-                                            exit={{ opacity: 0, y: 8, scale: 0.97 }}
-                                            transition={{ duration: 0.15 }}
-                                            onMouseLeave={() => setShopOpen(false)}
-                                            className="absolute top-full left-0 mt-2 w-52 bg-deep-navy/95 backdrop-blur-lg border border-white/10 rounded-2xl shadow-2xl shadow-black/50 py-2 overflow-hidden"
-                                        >
-                                            {SHOP_DROPDOWN.map((item, idx) => (
-                                                <Link
-                                                    key={item.name}
-                                                    href={item.href}
-                                                    onClick={() => setShopOpen(false)}
-                                                    className={`block px-5 py-2.5 text-sm font-bold uppercase tracking-wider transition-colors hover:bg-neon-orange/10 hover:text-neon-orange ${idx === 0 ? 'text-white border-b border-white/10 mb-1' : 'text-gray-400'}`}
-                                                >
-                                                    {item.name}
-                                                </Link>
-                                            ))}
-                                        </motion.div>
-                                    )}
-                                </AnimatePresence>
-                            </div>
-
-                            {/* Rest of nav links */}
-                            {NAV_LINKS.slice(1).map((item) => (
+                        {/* Desktop Nav */}
+                        <nav className="hidden md:flex items-center gap-6">
+                            {NAV_LINKS.map((item) => (
                                 <Link
                                     key={item.name}
                                     href={item.href}
-                                    className="text-gray-300 hover:text-neon-orange px-3 py-2 rounded-md text-sm font-bold uppercase tracking-wider transition-colors relative group"
+                                    className="text-sm font-semibold hover:text-primary transition-colors text-slate-600 dark:text-slate-400"
                                 >
                                     {item.name}
-                                    <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-neon-orange transition-all group-hover:w-full"></span>
                                 </Link>
                             ))}
-                        </div>
+                        </nav>
                     </div>
 
-                    {/* Icons */}
-                    <div className="flex items-center gap-4">
-                        <button className="text-gray-300 hover:text-white transition-colors">
-                            <Search className="w-6 h-6" />
-                        </button>
-                        <div
-                            onClick={() => setIsCartOpen(true)}
-                            className="relative cursor-pointer group"
-                        >
-                            <ShoppingCart className="w-6 h-6 text-gray-300 group-hover:text-neon-orange transition-colors" />
-                            {totalItems > 0 && (
-                                <span className="absolute -top-2 -right-2 bg-neon-orange text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center animate-bounce">
-                                    {totalItems}
-                                </span>
-                            )}
+                    {/* Search & Actions */}
+                    <div className="flex items-center gap-4 flex-1 justify-end">
+                        <div className="hidden lg:flex relative max-w-xs w-full">
+                            <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xl">search</span>
+                            <input
+                                type="text"
+                                placeholder="Search collectibles..."
+                                className="w-full bg-primary/5 border-none rounded-lg py-2 pl-10 pr-4 text-sm focus:ring-2 focus:ring-primary/50 placeholder:text-slate-400 outline-none"
+                            />
                         </div>
-                        <button
-                            onClick={() => setIsOpen(!isOpen)}
-                            className="md:hidden text-gray-300 hover:text-white"
-                        >
-                            {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-                        </button>
+
+                        <div className="flex gap-2 items-center">
+                            <button
+                                onClick={() => setIsCartOpen(true)}
+                                className="relative p-2 rounded-lg bg-primary/10 text-primary hover:bg-primary hover:text-white transition-all"
+                            >
+                                <span className="material-symbols-outlined">shopping_cart</span>
+                                {totalItems > 0 && (
+                                    <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white">
+                                        {totalItems}
+                                    </span>
+                                )}
+                            </button>
+                            <Link href="/collectors" className="p-2 rounded-lg bg-primary/10 text-primary hover:bg-primary hover:text-white transition-all">
+                                <span className="material-symbols-outlined">person</span>
+                            </Link>
+                            <button
+                                onClick={() => setIsOpen(!isOpen)}
+                                className="md:hidden p-2 text-slate-600 dark:text-slate-300"
+                            >
+                                {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -172,32 +114,21 @@ export default function Navbar() {
                         initial={{ opacity: 0, y: -20 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -20 }}
-                        className="md:hidden bg-deep-navy/95 border-b border-white/10 px-4 pt-2 pb-6"
+                        className="absolute top-16 sm:top-20 left-0 right-0 md:hidden bg-white/95 dark:bg-slate-900/95 border-b border-slate-200 dark:border-slate-800 px-4 pt-2 pb-6 shadow-xl"
                     >
-                        <p className="text-neon-orange text-[9px] font-black uppercase tracking-[0.3em] px-3 pt-4 pb-2 opacity-60">Shop</p>
-                        {MOBILE_LINKS.map((item) => {
-                            const isShopHeader = item.name === "Home";
-                            const isShopCategory = item.name.startsWith("—");
-                            const isSectionHead = !isShopCategory && item.name !== "Home";
-
-                            return (
-                                <div key={item.name}>
-                                    {isSectionHead && item.name === "Collectors" && (
-                                        <div className="border-t border-white/5 mt-2 pt-2" />
-                                    )}
-                                    <Link
-                                        href={item.href}
-                                        onClick={() => setIsOpen(false)}
-                                        className={`block px-3 py-3 text-base font-bold uppercase tracking-widest transition-colors hover:text-neon-orange ${isShopCategory ? 'text-gray-500 text-sm pl-6' : 'text-gray-300'}`}
-                                    >
-                                        {isShopCategory ? item.name.replace("— ", "") : item.name}
-                                    </Link>
-                                </div>
-                            );
-                        })}
+                        {MOBILE_LINKS.map((item) => (
+                            <Link
+                                key={item.name}
+                                href={item.href}
+                                onClick={() => setIsOpen(false)}
+                                className="block px-3 py-3 text-base font-bold uppercase tracking-widest transition-colors hover:text-primary text-slate-700 dark:text-slate-300"
+                            >
+                                {item.name}
+                            </Link>
+                        ))}
                     </motion.div>
                 )}
             </AnimatePresence>
-        </nav>
+        </header>
     );
 }
