@@ -1,0 +1,51 @@
+@baseUrl = http://localhost:5000/api
+@token = {{login.response.body.token}}
+
+### Register
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+
+{
+  "name": "Test User",
+  "email": "test@example.com",
+  "password": "password123"
+}
+
+### Login
+# @name login
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "test@example.com",
+  "password": "password123"
+}
+
+### Get Products
+GET {{baseUrl}}/products
+
+### Add to Cart
+POST {{baseUrl}}/cart
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "product_id": 1,
+  "quantity": 2
+}
+
+### Place Order
+POST {{baseUrl}}/orders
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "items": [
+    {
+      "product_id": 1,
+      "quantity": 2,
+      "price": 29.99
+    }
+  ],
+  "total_amount": 59.98
+}

@@ -1,0 +1,33 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+
+# Environment files — NEVER commit these
+.env
+.env.local
+.env.production
+backend/.env
+
+# PHP credentials — CRITICAL: never commit
+public_html/api/config/env.php
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# Uploaded files (large binary files, managed on server)
+public_html/uploads/*
+!public_html/uploads/.htaccess

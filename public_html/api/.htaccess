@@ -1,0 +1,18 @@
+Options -Indexes
+
+# Pass Authorization header through to PHP
+RewriteEngine On
+RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+
+# Handle preflight OPTIONS requests
+RewriteCond %{REQUEST_METHOD} OPTIONS
+RewriteRule .* - [R=200,L]
+
+# Block direct access to config files
+<FilesMatch "^env\.php$">
+    Order Allow,Deny
+    Deny from all
+</FilesMatch>
+
+# Ensure .php extension is served correctly
+AddType application/x-httpd-php .php
